@@ -21,12 +21,17 @@ const char MY[] = "01";
 #define NUM_INT 1
 int PIN_INTERRUPTORES[] = {8};
 
+//////////////////////////////////////////////////////////////////////////////////////
+// Por cada interruptor hay que indicar la posicion dentro del vector de actuadores //
+//  del actuador al que modifica.                                                   //
+//////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////
-// Numero de actuadores y sus pines correspondientes.                      //
-// Para cada interruptor tiene que haber un actuador. Si dos interruptores //
-// actuan sobre el mismo actuador, duplicar el actuador en el vector.      //
-/////////////////////////////////////////////////////////////////////////////
+int INTERRUPTOR_ACTUADOR[] = {0};
+
+
+////////////////////////////////////////////////////////
+// Numero de actuadores y sus pines correspondientes. //
+////////////////////////////////////////////////////////
 
 #define NUM_ACT 1
 int PIN_ACTUADORES[] = {13};
@@ -47,6 +52,7 @@ int ARRAY_TEMPERATURA[10];
 int PIN_PIR = 10;
 int ACTUADOR_PIR = 0;
 int TIEMPO_PIR = 30000;
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Pin de la resistencia LDR. Este al igual que el de la temperatura tambien debe ser un pin analogico. //
@@ -77,6 +83,12 @@ int VALOR_ACTUADORES[NUM_ACT];
 //////////////////////////////////////
 
 int FUNCION_MSJ, ACTUADOR_MSJ, VALOR_MSJ;
+
+////////////
+// Flags  //
+////////////
+
+int FLAG_PIR = 0;
 int FLAG_MSJ = 0;
 
 ////////////
@@ -111,10 +123,10 @@ void setup() {
 
 
 void loop() {
-  int i, est_aux, cantidad_luz;
+  int i, est_aux, cantidad_luz, posicion_actuador;
   static int bucle_temp = 0;
   static int array_luz[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  static int flag_pir = 0;
+
 ////////////////////////////
 // RECEPCION DE MENSAJES  //
 ////////////////////////////
@@ -140,29 +152,12 @@ void loop() {
   //Cuando encontramos un cambio hay que comprobar que no se trate de un rebote en la señal.
   //Para ello guardamos el tiempo que lleva arduino encendido.
       if(TIMER_INTERRUPTOR[i] == 0){
+        
         TIMER_INTERRUPTOR[i] = millis();
-        
-        if(VALOR_ACTUADORES[i] == 0){
-          VALOR_ACTUADORES[i] = 1; 
 
-          //Evita que el sensor de movimiento apague el actuador accidentalmente.
-          if(i == PIN_PIR){
-            flag_pir = 1;
-            TIMER_PIR = 0;
-          }
-          
-          enviaMsj(10,i,1);
-        }else{
-          VALOR_ACTUADORES[i] = 0;
-          
-          if(i == PIN_PIR){
-            flag_pir = 0;
-            TIMER_PIR = 0;
-          }
+        posicion_actuador = INTERRUPTOR_ACTUADOR[i];
 
-          enviaMsj(10,i,0);
-        }
-        
+        cambiaActuador(posicion_actuador);     
       }else{
   //Cuando haya pasado 1 segundos volvemos al estado inicial.
         if( millis() - TIMER_INTERRUPTOR[i] > 1000){
@@ -185,7 +180,7 @@ void loop() {
   //Control de activacion por movimiento
   //flag_pir se usa para evitar encendidos y apagados accidentales, es decir, el interruptor tiene preferencia.
 
-  if(flag_pir == 0 && digitalRead(PIN_PIR) == HIGH){
+  if(FLAG_PIR == 0 && digitalRead(PIN_PIR) == HIGH){
     
   //Si se activa el sensor de movimiento y TIMER_PIR es 0, calculamos la cantidad de luz para saber si es necesario encender la luminaria.
   //Si TIMER_PIR ya contiene un valor, no hay comprobar la luz, puesto que la luminaria esta encendida, nunca se apagaria.
@@ -197,7 +192,7 @@ void loop() {
     }else{
       cantidad_luz = 0;
     }
-    
+    //Siempre que haya movimiento, se reinicia el contador de tiempo.
     if(cantidad_luz < 500){
       TIMER_PIR = millis();
       VALOR_ACTUADORES[ACTUADOR_PIR] = 1;
@@ -235,15 +230,16 @@ void recibeMensaje(){
     aux[0] = msj[0];
     aux[1] = msj[1];
     aux[2] = '\0';
-//solo si el mensaje va dirigido a este nodo, o a la direccion de broadcast.
+    //solo si el mensaje va dirigido a este nodo, o a la direccion de broadcast.
     if(strcmp(MY, aux) == 0 || strcmp("00", aux) == 0){
       sscanf(msj, "%2d%2d%2d%3d",NULL,&FUNCION_MSJ,&ACTUADOR_MSJ,&VALOR_MSJ);
       FLAG_MSJ = 1;
-    } 
+    }
   }else{
     enviaMsj(99, 0, 0);
   }
 }
+
 void procesaMensaje(){
   switch(FUNCION_MSJ){
         case 0:
@@ -260,7 +256,6 @@ void procesaMensaje(){
           break;
       }
 }
-
 
 void apagarTodo(){
  for(int i; i < NUM_ACT; i++){
@@ -294,4 +289,24 @@ void enviaMsj(int funcion, int actuador, int valor){
   char ack[10];
   sprintf(ack, "%s%02d%02d%03d", MY, funcion, actuador, valor);
   Serial.print(ack);  
+}
+
+void cambiaActuador(int pos_actuador){
+
+  int flag_pir_aux;
+
+  if( VALOR_ACTUADORES[pos_actuador] == 0){  
+      VALOR_ACTUADORES[pos_actuador] = 1;
+      flag_pir_aux = 1;
+  }else{
+      VALOR_ACTUADORES[pos_actuador] = 0;
+      flag_pir_aux = 0;
+  }
+
+  if(pos_actuador == ACTUADOR_PIR){
+    FLAG_PIR = flag_pir_aux;
+    TIMER_PIR = 0;
+  }
+
+  enviaMsj(10, pos_actuador, flag_pir_aux);
 }
