@@ -6,3 +6,4 @@ SERVIDOR/.idea/SERVIDOR.iml
 SERVIDOR/.idea/workspace.xml
 SERVIDOR/.idea/scopes/scope_settings.xml
 SERVIDOR/.idea/vcs.xml
+*.pyc
