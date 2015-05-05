@@ -3,10 +3,8 @@ import time
 import threading
 
 class Servidor(threading.Thread):
-    def __init__(self, bloqueo, ser):
+    def __init__(self):
         threading.Thread.__init__(self)
-        self.bloqueo = bloqueo
-        self.ser = ser
     
     def run(self):
 
@@ -38,29 +36,6 @@ class Conexion(threading.Thread):
         
         comando = self.sck.recv(1024)
         print(comando)
-        
-        self.bloqueo.acquire()
-        
-#vaciamos el buffer de lectura
-
-        b = self.ser.inWaiting()
-        if(b > 0):
-            print(self.ser.read(b) + "flush")
-#entramos en modo comandos
-        self.ser.write("+++")
-        nodentro  = True
-        while nodentro:
-            lectura = self.ser.read(1)
-            print(lectura)
-            if lectura == '\r':
-                nodentro = False 
-        print('atdl5')
-#modificamos la direccion de destino y salimos
-        self.ser.write("ATDL15,CN\r")
-        lectura = self.ser.read(6)
-        print(lectura)
-#enviamos el comando
-        
         
         
 #cerramos el socket
