@@ -8,7 +8,7 @@ class Pcm(threading.Thread):
         self.recibidos = rec
         self.enviar = env
         self.peticiones = pet
-        self.bd = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='', db='platymo')
+        self.bd = pymysql.connect(host='127.0.0.1', port=3306, user='root', passwd='05101986', db='platymo')
 
     def run(self):
 
@@ -24,9 +24,11 @@ class Pcm(threading.Thread):
                 val = msj[6:9]
 
                 if func == "10":
-                    self.setBDValAct(my, act, val)
+                    self.setValBDAct(my, act, val)
+                    pass
                 elif func == "20":
                     self.setValBDSensor(my, act, val)
+                    pass
 
             if self.peticiones.qsize() > 0:
                 peticion = self.peticiones.get()
@@ -80,7 +82,7 @@ class Pcm(threading.Thread):
     def setValBDAct(self, my, actuador, valor):
         id = self.getIdNodo(my)
         cursor = self.bd.cursor()
-        cursor.execute('UPDATE actuadores SET estado=%s WHERE posicion=%s AND id_nodo=%s', (valor, actuador, id))
+        cursor.execute('UPDATE actuadores SET estado=%s WHERE posicion=%s AND nodo_id=%s', (valor, actuador, id))
         self.bd.commit()
 
     def setValBDSensor(self, my, sensor, valor):
@@ -91,7 +93,7 @@ class Pcm(threading.Thread):
 
     def getIdNodo(self, my):
         cursor = self.bd.cursor()
-        cursor.execute('SELECT id_nodo FROM nodos WHERE my=%s', (my,) )
+        cursor.execute('SELECT id FROM nodos WHERE my=%s', (my,) )
         return cursor.fetchone()[0]
 
 

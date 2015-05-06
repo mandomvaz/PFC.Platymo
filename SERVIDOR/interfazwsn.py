@@ -17,10 +17,14 @@ class InterfazWsn(threading.Thread):
                 msj = msj_b.decode('ascii')
                 print(len(msj))
                 print(msj)
+
+
             if self.enviar.qsize() > 0 :
                 msj = self.enviar.get()
                 self.enviar.task_done()
                 msj_b = msj.encode()
                 print("envio")
                 print(msj_b)
+
+                self.recibidos.put(msj)
                 #wsn.write(msj_b)
