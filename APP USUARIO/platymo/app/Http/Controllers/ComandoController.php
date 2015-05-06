@@ -17,12 +17,13 @@ class ComandoController extends Controller {
 		$actuador = Actuador::find($id);
 
 		$nodo = $actuador->nodo()->first();
+		$datos['peticion'] = 'actuador';
 		$datos['my'] = $nodo->my;
 		$datos['funcion'] = '10';
 		$datos['posicion'] = $actuador->posicion;
-		$datos['valor'] = $valor;
+		$datos['valor'] = (int)$valor;
 
-		//PythonComm::envia($datos);
+		PythonComm::envia($datos);
 
 
 		return redirect()->back();

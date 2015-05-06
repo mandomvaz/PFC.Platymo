@@ -8,6 +8,8 @@ class PythonComm{
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if ($socket === false) {
 		    echo "socket_create() falló: razón: " . socket_strerror(socket_last_error()) . "\n";
+		}else{
+			echo 'ok';
 		}
 
 		$result = socket_connect($socket, 'localhost', '9999');

@@ -9,6 +9,7 @@ use App\Http\Requests\HabStoreFormRequest;
 use App\Nodo;
 use App\Actuador;
 use App\Sensor;
+use \Session;
 
 
 class HabitacionController extends Controller {
@@ -51,8 +52,8 @@ class HabitacionController extends Controller {
 		}
 		
 		
-
-		return "";
+		Session::flash('msg', 'Habitacion añadida.');
+		return redirect('configuracion');
 	}
 
 	public function edit($id){
@@ -90,9 +91,19 @@ class HabitacionController extends Controller {
 			$nodo->actuadores()->save($actuador);
 		}
 
-		return redirect('configuracion/habitacion/'.$nodo->id);
+		Session::flash('msg', 'Habitacion modificada.');
+		return redirect('configuracion');
 
 
+	}
+
+	public function delete($id){
+
+		$nodo = Nodo::find($id);
+		$nodo->delete();
+
+		Session::flash('msg', 'Habitacion borrada.');
+		return redirect('configuracion');
 	}
 
 	public function borrarActuador($id, $n_id){

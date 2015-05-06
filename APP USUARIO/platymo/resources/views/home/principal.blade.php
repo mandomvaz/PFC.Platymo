@@ -54,10 +54,12 @@
 				<div class="panel-body">
 					@foreach ($elemento['actuadores'] as $actuador) 
 						<span>{{ $actuador->nombre }}</span>
-						<a href="/comando/actuador/{{ $actuador->id }}/1" class="btn btn-success 
-						{!! ($actuador->estado > 0)? 'disabled' : '' !!}">ON</a>
-						<a href="/comando/actuador/{{ $actuador->id }}/0" class="btn btn-danger 
-						{!! ($actuador->estado > 0)? '' : 'disabled' !!}">OFF</a>
+						<div class="btn-group">
+							<a href="/comando/actuador/{{ $actuador->id }}/1"
+							{!! ($actuador->estado > 0)? 'class="btn btn-default disabled"' : 'class="btn btn-success"' !!}">ON</a>
+							<a href="/comando/actuador/{{ $actuador->id }}/0"  
+							{!! ($actuador->estado > 0)? 'class="btn btn-danger"' : 'class="btn btn-default disabled"' !!}">OFF</a>
+						</div>
 					@endforeach
 				</div>
 			</div>

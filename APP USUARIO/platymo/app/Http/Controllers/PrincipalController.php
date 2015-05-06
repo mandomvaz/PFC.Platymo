@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Nodo;
 use App\Actuador;
+use \Session;
 
 class PrincipalController extends Controller {
 
@@ -40,6 +41,8 @@ class PrincipalController extends Controller {
 		foreach ($habitaciones as $habitacion) {
 			$array_panel[$i] = array();
 			$array_panel[$i]['habitacion'] = $habitacion;
+			$array_panel[$i]['escenas'] = array();
+			$array_panel[$i]['acciones'] = array();
 			$array_panel[$i]['actuadores'] = array();
 			$j = 0;
 			foreach ($habitacion->escenas()->get() as $escena) {
@@ -47,7 +50,10 @@ class PrincipalController extends Controller {
 				$j++;
 			}
 			$j = 0;
+			$k = 0;
 			foreach ($habitacion->actuadores()->get() as $actuador) {
+				$array_panel[$i]['actuadores'][$k] = $actuador;
+				$k++;
 				foreach ($actuador->acciones()->get() as $accion) {
 					$array_panel[$i]['accion'][$j] = $accion;
 					$j++;
@@ -56,8 +62,8 @@ class PrincipalController extends Controller {
 			$i++;
 		}
 
-
-		return view('config.panelConfiguracion')->with('panel' => $array_panel);
+		Session::reflash();
+		return view('config.panelConfiguracion')->with(array('panel' => $array_panel));
 	}
 
 }
