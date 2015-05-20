@@ -27,8 +27,17 @@ Route::get('configuracion/escena/{id}', 'EscenaController@edit');
 Route::post('configuracion/escena/update', 'EscenaController@update');
 Route::get('configuracion/escena/delete/{id}', 'EscenaController@delete');
 
+Route::get('configuracion/habitacion/accion/{hab_id}', 'AccionController@create');
+Route::post('configuracion/accion/store', 'AccionController@store');
+Route::get('configuracion/accion/{id}', 'AccionController@edit');
+Route::post('configuracion/accion/update', 'AccionController@update');
+Route::get('configuracion/accion/delete/{id}', 'AccionController@delete');
+
 /*
 FRONTEND
  */
 Route::get('/', 'PrincipalController@home');
+Route::get('vista/{id}', 'PrincipalController@vista');
 Route::get('comando/actuador/{id}/{valor}', 'ComandoController@actuador');
+Route::get('comando/escena/{id}', 'ComandoController@escena');
+Route::get('comando/apagar', 'ComandoController@apagarTodo');

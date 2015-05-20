@@ -23,8 +23,7 @@ class InterfazWsn(threading.Thread):
                 msj = self.enviar.get()
                 self.enviar.task_done()
                 msj_b = msj.encode()
-                print("envio")
-                print(msj_b)
+                print("envio:"+msj)
 
                 self.recibidos.put(msj)
                 #wsn.write(msj_b)

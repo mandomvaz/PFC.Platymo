@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Nodo;
 use App\Actuador;
 use \Session;
+use App\Accion;
+use App\Escena;
 
 class PrincipalController extends Controller {
 
@@ -27,10 +29,15 @@ class PrincipalController extends Controller {
 			}
 			$i++;
 		}
+		$escenas = Escena::all();
+		$acciones = Accion::all();
 
 
 
-		return view('home.principal')->with(array('panel' => $array_panel));
+		return view('home.principal')->with(array('panel' => $array_panel,
+												  'escenas' => $escenas,
+												  'acciones' => $acciones,
+												  'title' => ''));
 	}
 
 	public function configuracion(){
@@ -55,7 +62,7 @@ class PrincipalController extends Controller {
 				$array_panel[$i]['actuadores'][$k] = $actuador;
 				$k++;
 				foreach ($actuador->acciones()->get() as $accion) {
-					$array_panel[$i]['accion'][$j] = $accion;
+					$array_panel[$i]['acciones'][$j] = $accion;
 					$j++;
 				}
 			}
@@ -63,7 +70,33 @@ class PrincipalController extends Controller {
 		}
 
 		Session::reflash();
-		return view('config.panelConfiguracion')->with(array('panel' => $array_panel));
+		return view('config.panelConfiguracion')->with(array('panel' => $array_panel,
+															 'title' => 'Configuración'));
+	}
+
+	public function vista($id){
+
+		$habitacion = Nodo::find($id);
+
+		$actuadores = $habitacion->actuadores()->get();
+		$escenas = $habitacion->escenas()->get();
+		$acciones = array();
+
+		$i = 0;
+		foreach ($actuadores as $actuador) {
+			foreach ($actuador->acciones()->get() as $accion) {
+				$acciones[$i] = array();
+				$acciones[$i]['accion'] = $accion;
+				$acciones[$i]['actuador'] = $actuador->nombre;
+				$i++;
+			}
+		}
+
+		return view('home.vista')->with(['habitacion' => $habitacion, 
+										 'escenas' => $escenas, 
+										 'acciones' => $acciones, 
+										 'actuadores' => $actuadores,
+										 'title' => $habitacion->estancia]);
 	}
 
 }

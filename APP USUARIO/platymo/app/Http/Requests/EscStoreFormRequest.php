@@ -22,7 +22,7 @@ class EscStoreFormRequest extends Request {
 	public function rules()
 	{
 		$rules = array(
-			'nombre' => 'required|alpha_num|max:50'
+			'nombre' => 'required|string|max:50'
 			);
 
 		return $rules;
@@ -32,7 +32,7 @@ class EscStoreFormRequest extends Request {
 
 		return [
 				'required' => 'El campo :attribute es obligatorio.',
-				'alpha_num' => 'Solo se permiten caracteres alfanuméricos en el campo :attribute.',
+				'string' => 'Solo se permiten caracteres alfanuméricos en el campo :attribute.',
 				'max:50' => 'El campo :attribute puede tener como máximo 50 caracteres.'
 				];
 	}

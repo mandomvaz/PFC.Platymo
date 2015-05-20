@@ -25,7 +25,8 @@ class EscenaController extends Controller {
 		$habitacion = Nodo::find($hab_id);
 		$actuadores = $habitacion->actuadores()->get();
 		return view('config.escena')->with(array('habitacion' => $habitacion,
-												 'actuadores' => $actuadores));
+												 'actuadores' => $actuadores,
+												 'title' => 'Nueva escena'));
 	}
 
 	/**
@@ -45,11 +46,8 @@ class EscenaController extends Controller {
 		$nodo->escenas()->save($escena);
 
 		foreach ($nodo->actuadores()->get() as $actuador) {
-			if($request->exists($actuador->id)){
-				$escena->actuadores()->attach($actuador->id, ['estado' => 1]);
-			}else{
-				$escena->actuadores()->attach($actuador->id, ['estado' => 0]);
-			}
+			$estado = $request->get($actuador->id);
+			$escena->actuadores()->attach($actuador->id, ['estado' => $estado]);
 		}
 
 
@@ -77,7 +75,6 @@ class EscenaController extends Controller {
 			$act_estado[$i] = array();
 			$act_estado[$i]['id_actuador'] = $actuador->id;
 			$act_estado[$i]['nombre'] = $actuador->nombre;
-			$act_estado[$i]['estado'] = 0;
 			
 			foreach ($query as $row) {
 				
@@ -90,7 +87,8 @@ class EscenaController extends Controller {
 
 		return view('config.escenaEdit')->with(array('habitacion' => $habitacion,
 												 'act_estado' => $act_estado,
-												 'escena' => $escena));
+												 'escena' => $escena,
+												 'title' => $escena->nombre));
 	}
 
 	/**
@@ -109,11 +107,7 @@ class EscenaController extends Controller {
 		$data_sync = array();
 
 		foreach (Nodo::find($escena->nodo_id)->actuadores()->get() as $actuador) {
-			if($request->exists($actuador->id)){
-				$data_sync[$actuador->id] = ['estado' => 1];
-			}else{
-				$data_sync[$actuador->id] = ['estado' => 0];
-			}
+			$data_sync[$actuador->id] = ['estado' => $request->get($actuador->id)];
 		}
 
 		$escena->actuadores()->sync($data_sync);

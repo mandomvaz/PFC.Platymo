@@ -15,8 +15,8 @@ class InterfazApp(threading.Thread):
         servidor.bind(('localhost', 9999))
         servidor.listen(5)
         i = 0
-        while i < 3:
-            print('i = %(i)d')
+        while i < 10:
+            print('----------------------------------------------------------------------------------------------')
             i = i + 1
             conn, (host, puerto) = servidor.accept()
             handler = AppHandler(conn, host, puerto, self.a_enviar, self.peticiones)
@@ -40,18 +40,16 @@ class AppHandler(threading.Thread):
         data  = self.conexion.recv(1024)
         data = data.decode('UTF-8')
         deco  = json.loads(data)
+        respuesta = ""
 
-        if ('peticion' in deco)  and deco['peticion'] == 'actuador':
-            msg = "%(my)s10%(posicion)02d%(valor)03d"
-            peticion = msg%deco
-
-            self.a_enviar.put(peticion)
-
-
-
+        if ('peticion' in deco):
+            self.peticiones.put(deco)
+            respuesta = '{ ok : 1 }'
+        else:
+            respuesta = '{ fail : 0 }'
 
 
-        response = json.dumps('{ ok : 1}')
+        response = json.dumps(respuesta)
 
         self.conexion.send(bytes(response, 'utf8'))
 

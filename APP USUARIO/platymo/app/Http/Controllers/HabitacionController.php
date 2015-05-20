@@ -23,7 +23,8 @@ class HabitacionController extends Controller {
 		$nodo = new Nodo;
 		return view('config.habitacion')->with(array('nodo' => $nodo,
 													 'a' => $actuadores,
-													 'p' => $posiciones));
+													 'p' => $posiciones,
+													 'title' => 'Nueva habitación'));
 	}
 
 	public function store(HabStoreFormRequest $request){
@@ -32,28 +33,28 @@ class HabitacionController extends Controller {
 		$nodo = new Nodo;
 		$nodo->estancia = $request->get('estancia');
 		$nodo->my = $request->get('my');
-		$nodo->tipo_estancia = $request->get('tipo_estancia');
 		$nodo->save();
 
-		$actuadores = $request->get('actuador');
-		$posiciones = $request->get('posicion');
-		$checkbox = $request->get('checkbox');
-
-		for($i = 0; $i < count($actuadores); $i++) {
-			$actuador = new Actuador;
-			$actuador->nombre = $actuadores[$i];
-			$actuador->posicion = $posiciones[$i];
-			$actuador->estado = 0;
-			$actuador->principal = false;
-			if(isset($checkbox[$i])){
-				$actuador->principal = true;
-			}
-			$nodo->actuadores()->save($actuador);
+		$nombre_act = $request->get('actuador');
+		$pos_act = $request->get('posicion');
+		$ppl_act  = false;
+		if($request->exists('principal')){
+			$ppl_act = true;
 		}
-		
-		
-		Session::flash('msg', 'Habitacion añadida.');
-		return redirect('configuracion');
+
+		$actuador = new Actuador;
+		$actuador->nombre = $nombre_act;
+		$actuador->posicion = $pos_act;
+		$actuador->principal = $ppl_act;
+
+		$nodo->actuadores()->save($actuador);
+
+		if($request->exists('addAct')){
+			return redirect('configuracion/habitacion/'.$nodo->id);
+		}else{
+			Session::flash('msg', 'Habitacion añadida.'.$request->get('addAct'));
+			return redirect('configuracion');
+		}
 	}
 
 	public function edit($id){
@@ -63,7 +64,8 @@ class HabitacionController extends Controller {
 
 		
 		return view('config.habitacionEdit')->with(array('nodo' => $nodo,
-													 'a' => $actuadores));
+													 'a' => $actuadores,
+													 'title' => 'Configuración '.$nodo->estancia));
 		
 	}
 
@@ -72,28 +74,29 @@ class HabitacionController extends Controller {
 		$nodo = Nodo::find($request->get('nodo_id'));
 		$nodo->estancia = $request->get('estancia');
 		$nodo->my = $request->get('my');
-		$nodo->tipo_estancia = $request->get('tipo_estancia');
 		$nodo->save();
 
-		$actuadores = $request->get('actuador');
-		$posiciones = $request->get('posicion');
-		$checkbox = $request->get('checkbox');
-
-		for($i = 0; $i < count($actuadores); $i++) {
-			$actuador = new Actuador;
-			$actuador->nombre = $actuadores[$i];
-			$actuador->posicion = $posiciones[$i];
-			$actuador->estado = 0;
-			$actuador->principal = false;
-			if(isset($checkbox[$i])){
-				$actuador->principal = true;
-			}
-			$nodo->actuadores()->save($actuador);
+		$nombre_act = $request->get('actuador');
+		$pos_act = $request->get('posicion');
+		$ppl_act  = false;
+		if($request->exists('principal')){
+			$ppl_act = true;
 		}
 
-		Session::flash('msg', 'Habitacion modificada.');
-		return redirect('configuracion');
+		$actuador = new Actuador;
+		$actuador->nombre = $nombre_act;
+		$actuador->posicion = $pos_act;
+		$actuador->principal = $ppl_act;
 
+		$nodo->actuadores()->save($actuador);
+
+		if($request->exists('addAct')){
+			return HabitacionController::edit($nodo->id);
+		}else{
+
+			Session::flash('msg', 'Habitacion modificada.');
+			return redirect('configuracion');
+		}
 
 	}
 

@@ -24,13 +24,13 @@ class PythonComm{
 		
 		while ($out = socket_read($socket, 2048)) {
 		    $out = json_decode($out);
-
-		    echo $out;
 		}
 		
 		
 		socket_close($socket);
 		
-		}
+	}
+
+	
 }
 

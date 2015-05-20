@@ -23,21 +23,12 @@ class HabStoreFormRequest extends Request {
 	{
 		$rules = array( 
 			'my' => 'required|alpha_num|min:2|max:2',
-			'estancia' => 'required|alpha_num|max:50',
-			'tipo_estancia' => 'in:sala_estar,dormitorio,cocina,baño,zona_paso'
+			'estancia' => 'required|string|max:50',
+			'actuador' => 'required|string|max:50',
+			'posicion' => 'required|numeric'
 		);
 		
-		if($this->request->get('actuador') != NULL){
-			foreach ($this->request->get('actuador') as $key => $value) {
-				$rules['actuador.'.$key] = "required|alpha_num|max:50";
-			}
-		}
-
-		if($this->request->get('actuador') != NULL){
-			foreach ($this->request->get('posicion') as $key => $value) {
-				$rules['posicion.'.$key] = "required|numeric|min:0";
-			}
-		}
+		
 
 		return $rules;
 	}
