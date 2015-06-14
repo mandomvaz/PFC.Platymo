@@ -15,7 +15,7 @@ class InterfazApp(threading.Thread):
         servidor.bind(('localhost', 9999))
         servidor.listen(5)
         i = 0
-        while i < 10:
+        while True:
             print('----------------------------------------------------------------------------------------------')
             i = i + 1
             conn, (host, puerto) = servidor.accept()

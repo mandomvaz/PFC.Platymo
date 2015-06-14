@@ -24,8 +24,8 @@ class HabStoreFormRequest extends Request {
 		$rules = array( 
 			'my' => 'required|alpha_num|min:2|max:2',
 			'estancia' => 'required|string|max:50',
-			'actuador' => 'required|string|max:50',
-			'posicion' => 'required|numeric'
+			'actuador' => 'string|max:50',
+			'posicion' => 'numeric'
 		);
 		
 		

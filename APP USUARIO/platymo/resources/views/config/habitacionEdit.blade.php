@@ -59,7 +59,7 @@
 	</div>
 	<div class="form-group">
 		<div class="col-md-6 col-md-offset-4">
-			{!! Form::submit('Guardar cambios', array('class' => 'btn btn-primary')) !!}
+			{!! Form::submit('Guardar cambios', array('class' => 'btn btn-primary', 'onclick' => 'retConfig();')) !!}
 		</div>
 	</div>
 	{!! Form::close() !!}

@@ -17,9 +17,14 @@ class ComandoController extends Controller {
 
 		$actuador = Actuador::find($id);
 
-		
+		$nodo = $actuador->nodo()->first();
 		$datos['peticion'] = 'actuador';
-		
+		/*
+		$datos['my'] = $nodo->my;
+		$datos['funcion'] = '10';
+		$datos['posicion'] = $actuador->posicion;
+		$datos['valor'] = (int)$valor;
+		*/
 		$datos['id'] = $actuador->id;
 		$datos['valor'] = (int)$valor;
 

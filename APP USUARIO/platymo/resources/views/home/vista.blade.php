@@ -26,7 +26,7 @@
 						@foreach($acciones as $accion)
 							<li class="list-group-item">
 								{{ $accion['accion']->nombre }}
-								<span class="badge">Hora {!! substr($accion['accion']->hora, 0, 5)    !!}</span>
+								<span class="badge {{ ($accion['accion']->estado != 0)? 'badge-verde' : 'badge-rojo' }}">Hora {!! substr($accion['accion']->hora, 0, 5)    !!}</span>
 							</li>
 						@endforeach
 					</ul>

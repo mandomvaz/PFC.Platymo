@@ -8,8 +8,29 @@ body{
 	border-bottom: 1px solid grey;
 }
 
+.logo-img{
+	height: 100px;
+	margin-top: -14px;
+}
+
+.h1-logo, .h1-logo:hover{
+	text-decoration: none;
+	font-weight: bold;
+	margin-left: 5px;
+	color: #00969B;
+
+}
+
+.a-banner, .a-banner:hover{
+	text-decoration: none;
+}
+
+.span-logo-rasp{
+	color: #D4264E;
+}
+
 .configuracion{
-	padding-top: 35px;
+	padding-top: 50px;
 }
 
 .panel-default > .panel-heading{
@@ -44,4 +65,5 @@ body{
 .badge-rojo{
 	background-color: #EE6C70;
 }
+
 

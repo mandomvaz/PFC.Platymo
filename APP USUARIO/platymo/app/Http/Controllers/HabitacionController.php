@@ -76,26 +76,31 @@ class HabitacionController extends Controller {
 		$nodo->my = $request->get('my');
 		$nodo->save();
 
-		$nombre_act = $request->get('actuador');
-		$pos_act = $request->get('posicion');
-		$ppl_act  = false;
-		if($request->exists('principal')){
-			$ppl_act = true;
-		}
-
-		$actuador = new Actuador;
-		$actuador->nombre = $nombre_act;
-		$actuador->posicion = $pos_act;
-		$actuador->principal = $ppl_act;
-
-		$nodo->actuadores()->save($actuador);
+		
 
 		if($request->exists('addAct')){
-			return HabitacionController::edit($nodo->id);
-		}else{
 
+			$nombre_act = $request->get('actuador');
+			$pos_act = $request->get('posicion');
+			$ppl_act  = false;
+			if($request->exists('principal')){
+				$ppl_act = true;
+			}
+
+			$actuador = new Actuador;
+			$actuador->nombre = $nombre_act;
+			$actuador->posicion = $pos_act;
+			$actuador->principal = $ppl_act;
+
+			$nodo->actuadores()->save($actuador);
+			
+		}
+
+		if($request->exists('retconfig')){
 			Session::flash('msg', 'Habitacion modificada.');
 			return redirect('configuracion');
+		}else{
+			return HabitacionController::edit($nodo->id);
 		}
 
 	}

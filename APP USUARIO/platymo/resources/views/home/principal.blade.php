@@ -56,9 +56,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<a href="/configuracion" class="btn btn-link">Configuración</a>
-	</div>
 </div>
 <div class="col-md-6 col-md-offset-1">
 

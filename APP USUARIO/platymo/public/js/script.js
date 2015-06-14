@@ -11,6 +11,14 @@ function addActuador(){
 }
 
 function addCampos(){
+	var formulario = document.getElementById('form_hab');
+
+	var input_hidden  = document.createElement('input');
+	input_hidden.type = 'hidden';
+	input_hidden.name = 'addAct';
+
+	formulario.appendChild(input_hidden);
+
 	var formgroup = document.getElementById('form-group-add');
 
 	var label_nombre = document.createElement('label');
@@ -66,8 +74,16 @@ function addCampos(){
 	formgroup.appendChild(input_pos);
 	formgroup.appendChild(div_check);
 	formgroup.appendChild(btn);
+}
 
-	
+function retConfig(){
+	var formulario = document.getElementById('form_hab');
 
+	var input_hidden  = document.createElement('input');
+	input_hidden.type = 'hidden';
+	input_hidden.name = 'retconfig';
 
+	formulario.appendChild(input_hidden);
+
+	formulario.submit();
 }
